@@ -5,7 +5,7 @@
 
 Classe Jeu
 		attributs :
-  			- isOver : check un joueur a il 66 pts ?
+  			- isOver : check un joueur a il 66 pts ?\n
 			- CartesTot : tt les 104 cartes.
 			- piles : liste de pile de cartes -> dict{"pile1":[1,55,103]} ..
 		functions :

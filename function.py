@@ -24,8 +24,8 @@ def ListCards():
     return listCards
 
 
-def RandomCards():
-    listCards = ListCards()
+def RandomCards(cards):
+    listCards = cards
     chosenCard = rd.choice(listCards)
     listCards.remove(chosenCard)
     return chosenCard, listCards

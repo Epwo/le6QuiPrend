@@ -18,11 +18,6 @@ class Game:
             # de telle sorte que la carte joué de Joueur 0 (-> J0): self._ReadyList[0] = *numero de la carte*
             self._ReadyList.append(0)
 
-    def play(self):
-        # tri dans l'ordre croissant des cartes
-
-        self._board.print()
-
     def validCarte(self, carte, joueur):
         self._ReadyList[joueur - 1] = carte
 
@@ -44,7 +39,7 @@ class Game:
                 nb += 1
         if self.nbJoueurs * (2 / 3) <= nb:
             # plus de 2/3 des joueurs ont validé leur carte
-            DisplayClock()
+            pass
         elif self.nbJoueurs == nb:
             # tous les joueurs ont validé leur carte
             self.play()
@@ -55,11 +50,11 @@ class Game:
     def SetCards(self, cards):
         self._cards = cards
 
-    def CreatePiles(self, cards):
-        piles = {'pile1': 0, 'pile2': 0, 'pile3': 0, 'pile4': 0}
-        for i in range(1, 5):
-            piles['pile' + str(i)], cards = function.RandomCards()
-            self.SetCards(cards)
+    def CreatePiles(self, cartes):
+        piles = [0,0,0,0]
+        for i in range(4):
+            piles[i], cards_rest = function.RandomCards(cartes)
+            self.SetCards(cards_rest)
         return piles
     def getReadyList(self):
         return self._ReadyList
@@ -69,15 +64,29 @@ class Game:
         listeCartes = self.getReadyList()
         SortListeCartes = listeCartes.copy()
         SortListeCartes.sort()
-        for e in SortListeCartes:
-            print(f"carte la plus petite : {e}, par le joueur {listeCartes.index(e)}")
+        for CarteJoueur in SortListeCartes:
+            print(f"carte la plus petite : {CarteJoueur}, par le joueur {listeCartes.index(CarteJoueur)}")
             # on sait ansi que le joueur `listeCartes.index(e)` a joué la carte `e`, et ce dans le bon ordre
             # on doit donc comparer aux cartes des piles
+            piles = self.getPiles()
+            deltas = []
+            for CartePile in piles:
+                deltas.append(abs(CartePile - CarteJoueur))
+            print('>',deltas)
+
+
+    def getPiles(self):
+        return self._piles
 
 
 class Player(Game):
     def __init__(self, name):
         self._cartes = []
+        for i in range(10):
+            CurrentsCartes = Game.GetCards(self)
+            newCarte, ResteCartes = function.RandomCards(CurrentsCartes)
+            self._cartes.append(newCarte)
+            Game.SetCards(self, ResteCartes)
         self._score = 0
         self._name = name
         self._isReady = False
@@ -109,4 +118,5 @@ class Player(Game):
 
 G = Game()
 print(G.CalculScore([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]))
+G.play()
 G.play()

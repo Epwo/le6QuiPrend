@@ -8,10 +8,14 @@ Classe Jeu
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- isOver : check un joueur a il 66 pts ?<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- CartesTot : tt les 104 cartes.<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- piles : liste de pile de cartes -> dict{"pile1":[1,55,103]} ..<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Player : instance de la classe player x nb joueurs<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Board : instance du plateau, qui va afficher le plateau pour le joeur (selon le schema)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- ReadyList : liste des joueurs ayant choisi leur carte, tel que `ReadyList = [1,2,3,4]` ainsi J1 a validé la carte 1, J2 la carte 2 etc..<br>
+
 &nbsp;&nbsp;&nbsp;&nbsp;functions :<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- __init__ : <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- create plateau -> choisis 4 cartes parmi la liste et les ajoutes dans piles.<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- create DictScore<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- create plateau -> choisis 4 cartes parmi la liste et les ajoutes dans piles.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- create DictScore<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - validCarte : pose la carte face caché<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - CleanPile : `(nomPile,player)` on désigne une pile : "pile1" et on la vide de ses cartes excepté la -1 dans player.score via<br> 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- CalculScore : `([int,int,...])` selon les regles de Round -> dictScore `= {10:3,20:3,...,55:7}` <br>
@@ -20,7 +24,7 @@ Classe Jeu
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- compare a chaque pile de carte, on pose la carte la ou le $\delta$ est le + faible  et positif.<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - une fois tt les cartes posées,<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - on regarde la taille de chaque pile<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- IsReady : check pour chaque joueur l'attribut isReady, si 2/3 == 1 alors -> `DisplayClock`<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- CheckReady : check pour chaque joueur la liste ReadyList, si 2/3 == 1 alors -> `DisplayClock`<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- si 100% == 1 -> `play()`<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - DisplayClock : affiche l'horloge de 30s  de timer. <br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- si a la fin du timer toujours pas choisi, prend une carte au hasard.<br>

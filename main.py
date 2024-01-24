@@ -13,13 +13,21 @@ class Game:
         self._ReadyList = []
         self._players = []
         for i in range(nb_players):
-            self._players.append(Player('J' + str(i)))
+            cartesJoueur = []
+            for j in range(10):
+                CurrentsCartes = self.GetCards()
+                newCarte, ResteCartes = function.RandomCards(CurrentsCartes)
+                cartesJoueur.append(newCarte)
+                self.SetCards(ResteCartes)
+                # Joueur {i} a pioché la carte {newCarte}
+
+            self._players.append(Player('J' + str(i), cartesJoueur))
             # On va mettre dans cette liste les cartes de joueurs qui ont validé leur carte
             # de telle sorte que la carte joué de Joueur 0 (-> J0): self._ReadyList[0] = *numero de la carte*
             self._ReadyList.append(0)
 
     def validCarte(self, carte, joueur):
-        self._ReadyList[joueur - 1] = carte
+        self._ReadyList[joueur] = carte
 
     def CleanPile(self, pile, player):
         pile = pile[-1]
@@ -37,12 +45,13 @@ class Game:
         for e in self._ReadyList:
             if e != 0:
                 nb += 1
-        if self.nbJoueurs * (2 / 3) <= nb:
-            # plus de 2/3 des joueurs ont validé leur carte
-            pass
-        elif self.nbJoueurs == nb:
+        if self.nbJoueurs == nb:
             # tous les joueurs ont validé leur carte
             self.play()
+        elif self.nbJoueurs * (2 / 3) <= nb:
+            # plus de 2/3 des joueurs ont validé leur carte
+            # on lance le TIMER
+            print("ATTENTION : plus de 2/3 des joueurs ont validé leur carte, le jeu va commencer !")
 
     def GetCards(self):
         return self._cards
@@ -50,12 +59,17 @@ class Game:
     def SetCards(self, cards):
         self._cards = cards
 
+    def getJoueurs(self):
+        return self._players
+
     def CreatePiles(self, cartes):
-        piles = [0,0,0,0]
+        piles = [[], [], [], []]
         for i in range(4):
-            piles[i], cards_rest = function.RandomCards(cartes)
-            self.SetCards(cards_rest)
+            carteChoisie, cartes_rest = function.RandomCards(cartes)
+            piles[i].append(carteChoisie)
+            self.SetCards(cartes_rest)
         return piles
+
     def getReadyList(self):
         return self._ReadyList
 
@@ -70,26 +84,28 @@ class Game:
             # on doit donc comparer aux cartes des piles
             piles = self.getPiles()
             deltas = []
-            for CartePile in piles:
-                deltas.append(abs(CartePile - CarteJoueur))
-            print('>',deltas)
-
+            # FAIRE cas ou la carte est plus petite que la plus petite carte de la pile
+            print(piles)
+            for pile in piles:
+                deltas.append(abs(pile[-1] - CarteJoueur))
+            print(
+                f"la carte de Joueur {listeCartes.index(CarteJoueur)} est la plus proche de la pile {deltas.index(min(deltas))}")
+            # on va donc ajouter la carte du joueur à la pile la plus proche
+            self.AddCarteToPile(CarteJoueur, deltas.index(min(deltas)))
 
     def getPiles(self):
         return self._piles
 
+    def AddCarteToPile(self, carte, nbPile):
+        self._piles[nbPile].append(carte)
 
-class Player(Game):
-    def __init__(self, name):
-        self._cartes = []
-        for i in range(10):
-            CurrentsCartes = Game.GetCards(self)
-            newCarte, ResteCartes = function.RandomCards(CurrentsCartes)
-            self._cartes.append(newCarte)
-            Game.SetCards(self, ResteCartes)
-        self._score = 0
+
+class Player():
+    def __init__(self, name, cartes, score=0, isReady=False):
+        self._cartes = cartes
+        self._score = score
         self._name = name
-        self._isReady = False
+        self._isReady = isReady
 
     def setCartes(self, cartes):
         self._cartes = cartes
@@ -117,6 +133,21 @@ class Player(Game):
 
 
 G = Game()
-print(G.CalculScore([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]))
-G.play()
-G.play()
+# comme on n'a pas précisé le nombre de joueurs, on a automatiquement 2 joueurs
+# on va regarder les cartes du Joueur 0
+cartesJ0 = G.getJoueurs()[0].getCartes()
+print(f"cartes de J0> {cartesJ0}")
+# on va regarder les cartes du Joueur 1
+cartesJ1 = G.getJoueurs()[1].getCartes()
+print(f"cartes de J1> {cartesJ1}")
+# on va regarder les cartes des piles
+print(f"cartes des piles> {G.getPiles()}")
+# on va faire jouer le Joueur 0 artificielement. il jouera automatiquement sa premiere carte.
+print(f"J0 joue la carte {cartesJ0[0]}")
+G.validCarte(cartesJ0[0], 0)
+print(f"J1 joue la carte {cartesJ1[0]}")
+G.validCarte(cartesJ1[0], 1)
+# on teste pour jouer
+G.CheckReady()
+# on re affiche la pile
+print(f"cartes des piles> {G.getPiles()}")

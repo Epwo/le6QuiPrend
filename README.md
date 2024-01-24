@@ -8,6 +8,8 @@ Classe Jeu
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- isOver : check un joueur a il 66 pts ?<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- CartesTot : tt les 104 cartes.<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- piles : liste de pile de cartes -> dict{"pile1":[1,55,103]} ..<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Player : instance de la classe player x nb joueurs<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Board : instance du plateau, qui va afficher le plateau pour le joeur (selon le schema)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;functions :<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- __init__ : <br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- create plateau -> choisis 4 cartes parmi la liste et les ajoutes dans piles.<br>

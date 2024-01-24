@@ -10,8 +10,8 @@ Classe Jeu
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- piles : liste de pile de cartes -> dict{"pile1":[1,55,103]} ..<br>
 &nbsp;&nbsp;&nbsp;&nbsp;functions :<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- __init__ : <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- create plateau -> choisis 4 cartes parmi la liste et les ajoutes dans piles.<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- create DictScore<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- create plateau -> choisis 4 cartes parmi la liste et les ajoutes dans piles.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- create DictScore<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - validCarte : pose la carte face caché<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - CleanPile : `(nomPile,player)` on désigne une pile : "pile1" et on la vide de ses cartes excepté la -1 dans player.score via<br> 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- CalculScore : `([int,int,...])` selon les regles de Round -> dictScore `= {10:3,20:3,...,55:7}` <br>

@@ -1,11 +1,15 @@
 # let's start this !
+import function
+
+
 class Game:
     def __init__(self, nb_players=2):
-        #self._board = Board()
+        # self._board = Board()
+        self._cards = function.ListCards()
         self.nbJoueurs = nb_players
         self.isGameOver = False
-        self._piles = {'pile1': [], 'pile2': [], 'pile3': [], 'pile4': []}
-        self._dictScore = {}
+        self._piles = self.CreatePiles(self._cards)
+        self._dictScore = function.MakeDict()
         self._ReadyList = []
         self._players = []
         for i in range(nb_players):
@@ -14,17 +18,23 @@ class Game:
             # de telle sorte que la carte joué de Joueur 0 (-> J0): self._ReadyList[0] = *numero de la carte*
             self._ReadyList.append(0)
 
+    def play(self):
+        # tri dans l'ordre croissant des cartes
+
+        self._board.print()
+
     def validCarte(self, carte, joueur):
         self._ReadyList[joueur - 1] = carte
 
     def CleanPile(self, pile, player):
         pile = pile[-1]
+        self._players[player].setScore(self._players[player].getScore() + self.CalculScore(pile))
         return pile
 
     def CalculScore(self, listeCartes):
         score = 0
         for carte in listeCartes:
-            score += DictScore[carte]
+            score += self._dictScore[carte]
         return score
 
     def CheckReady(self):
@@ -39,12 +49,34 @@ class Game:
             # tous les joueurs ont validé leur carte
             self.play()
 
+    def GetCards(self):
+        return self._cards
+
+    def SetCards(self, cards):
+        self._cards = cards
+
+    def CreatePiles(self, cards):
+        piles = {'pile1': 0, 'pile2': 0, 'pile3': 0, 'pile4': 0}
+        for i in range(1, 5):
+            piles['pile' + str(i)], cards = function.RandomCards()
+            self.SetCards(cards)
+        return piles
+    def getReadyList(self):
+        return self._ReadyList
+
     def play(self):
         # tri dans l'ordre croissant des cartes
-        self._board.print()
+        listeCartes = self.getReadyList()
+        SortListeCartes = listeCartes.copy()
+        SortListeCartes.sort()
+        for e in SortListeCartes:
+            print(f"carte la plus petite : {e}, par le joueur {listeCartes.index(e)}")
+            # on sait ansi que le joueur `listeCartes.index(e)` a joué la carte `e`, et ce dans le bon ordre
+            # on doit donc comparer aux cartes des piles
+
 
 class Player(Game):
-    def __init__(self,name):
+    def __init__(self, name):
         self._cartes = []
         self._score = 0
         self._name = name
@@ -75,5 +107,6 @@ class Player(Game):
         return self._isReady
 
 
-G = Game(nb_players=4)
+G = Game()
+print(G.CalculScore([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]))
 G.play()

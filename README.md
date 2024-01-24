@@ -34,7 +34,7 @@ Classe Joueur ( hérite ):<br>
 
 # Image du fonctionnement Interface
 
-![[6quiprend schema.jpg|]]
+![[6quiprend schema.jpg]]
 
 # Pré round
  10 cartes chacun -> a moduler si on veut pour la longueur du jeu

@@ -26,15 +26,19 @@ class Game:
             # de telle sorte que la carte joué de Joueur 0 (-> J0): self._ReadyList[0] = *numero de la carte*
             self._ReadyList.append(0)
 
-    def validCarte(self, carte, joueur):
-        self._ReadyList[joueur] = carte
+    def validCarte(self, carte, NbJoueur):
+        self._ReadyList[NbJoueur] = carte
+        joueur = self.getJoueurs()[NbJoueur]
+        joueur.setCartes(joueur.removeCarte(carte))
+
+    def GetWinner(self):
+        scores = self.getScores()
+        return scores.index(min(scores))
 
     def CalculScore(self, listeCartes):
         score = 0
-        print(self._dictScore)
         for carte in listeCartes:
             score += self._dictScore[carte]
-            print(carte, score)
         return score
 
     def CheckReady(self):
@@ -91,7 +95,8 @@ class Game:
             if all(delta < 0 for delta in deltas):
                 # on va donc demander au joueur de choisir la pile qu'il va remplacer
                 # on va donc afficher les piles
-                print(f"Voici les piles : {piles}")
+                for pile in piles:
+                    print(f"    la pile {piles.index(pile)} :{pile} qui vaut : {self.CalculScore(pile)}")
                 print("veuillez choisir une des piles que vous allez remplacer, vous récupereez les vachettes de la "
                       "pile choisie")
                 choice = input("veuillez choisir une pile : 0,1,2,3 :")
@@ -101,18 +106,21 @@ class Game:
                 # on va donc remplacer la pile choisie par la carte du joueur
                 Joueur = self.getJoueurs()[listeCartes.index(CarteJoueur)]
                 print(
-                    f"Joueur {listeCartes.index(CarteJoueur)} a récupéré les vachettes de la pile {choice}, la pile était {piles[int(choice)]} et valais {self.CalculScore(piles[int(choice)])}")
+                    f"Joueur {listeCartes.index(CarteJoueur)} a récupéré les vachettes de la pile {choice}, la pile "
+                    f"était {piles[int(choice)]} et valais {self.CalculScore(piles[int(choice)])}")
                 Joueur.setNewScore(self.CalculScore(piles[int(choice)]))
                 self.SetPile(int(choice), [CarteJoueur])
 
             else:
                 print(
-                    f"la carte de Joueur {listeCartes.index(CarteJoueur)} est la plus proche de la pile {deltas.index(min(deltas))}")
+                    f"la carte de Joueur {listeCartes.index(CarteJoueur)} est la plus proche"
+                    f" de la pile {deltas.index(function.minPositif(deltas))}")
                 # on va donc ajouter la carte du joueur à la pile la plus proche
-                self.AddCarteToPile(CarteJoueur, deltas.index(min(deltas)))
+                # il faut aussi verifier que ce soit le min mais qu'il soit positif
+                self.AddCarteToPile(CarteJoueur, deltas.index(function.minPositif(deltas)))
             # on va vérifier si on arrive a une fin de pile ( >6)
             for pile in piles:
-                if len(pile) > 6:
+                if len(pile) > 5:
                     print(
                         f"la pile {piles.index(pile)} est pleine{pile}, le joueur {listeCartes.index(CarteJoueur)} récup"
                         f"ère les vachettes")
@@ -161,6 +169,10 @@ class Player:
     def getCartes(self):
         return self._cartes
 
+    def removeCarte(self, carte):
+        self._cartes.remove(carte)
+        return self._cartes
+
     def getScore(self):
         return self._score
 
@@ -193,3 +205,5 @@ for i in range(8):
     # on re affiche la pile
     print(f"cartes des piles> {G.getPiles()}")
     print("scores des joueurs :", G.getScores())
+print("")
+print(f"le gagnant est le joueur {G.GetWinner()}")

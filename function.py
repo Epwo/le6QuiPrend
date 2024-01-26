@@ -17,6 +17,15 @@ def MakeDict():
     return DictScore
 
 
+def minPositif(liste):
+    # on enleve les valeurs negatives
+    positive_numbers = [num for num in liste if num > 0]
+    # on renvoie le min
+    min_positive = min(positive_numbers)
+    return min_positive
+
+
+
 def ListCards():
     listCards = []
     for i in range(1, 105):
@@ -29,4 +38,3 @@ def RandomCards(cards):
     chosenCard = rd.choice(listCards)
     listCards.remove(chosenCard)
     return chosenCard, listCards
-

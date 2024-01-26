@@ -29,15 +29,12 @@ class Game:
     def validCarte(self, carte, joueur):
         self._ReadyList[joueur] = carte
 
-    def CleanPile(self, pile, player):
-        pile = pile[-1]
-        self._players[player].setScore(self._players[player].getScore() + self.CalculScore(pile))
-        return pile
-
     def CalculScore(self, listeCartes):
         score = 0
+        print(self._dictScore)
         for carte in listeCartes:
             score += self._dictScore[carte]
+            print(carte, score)
         return score
 
     def CheckReady(self):
@@ -102,12 +99,26 @@ class Game:
                     print("vous ne pouvez que prendre une pile qui est plus petite que votre carte")
                     choice = input("veuillez choisir une pile : 0,1,2,3 :")
                 # on va donc remplacer la pile choisie par la carte du joueur
+                Joueur = self.getJoueurs()[listeCartes.index(CarteJoueur)]
+                print(
+                    f"Joueur {listeCartes.index(CarteJoueur)} a récupéré les vachettes de la pile {choice}, la pile était {piles[int(choice)]} et valais {self.CalculScore(piles[int(choice)])}")
+                Joueur.setNewScore(self.CalculScore(piles[int(choice)]))
                 self.SetPile(int(choice), [CarteJoueur])
+
             else:
                 print(
                     f"la carte de Joueur {listeCartes.index(CarteJoueur)} est la plus proche de la pile {deltas.index(min(deltas))}")
                 # on va donc ajouter la carte du joueur à la pile la plus proche
                 self.AddCarteToPile(CarteJoueur, deltas.index(min(deltas)))
+            # on va vérifier si on arrive a une fin de pile ( >6)
+            for pile in piles:
+                if len(pile) > 6:
+                    print(
+                        f"la pile {piles.index(pile)} est pleine{pile}, le joueur {listeCartes.index(CarteJoueur)} récup"
+                        f"ère les vachettes")
+                    Joueur = self.getJoueurs()[listeCartes.index(CarteJoueur)]
+                    Joueur.setNewScore(self.CalculScore(pile[:-1]))
+                    self.SetPile(piles.index(pile), [pile[-1]])
 
     def getPiles(self):
         return self._piles
@@ -118,8 +129,14 @@ class Game:
     def SetPile(self, nbPile, DataPile):
         self._piles[nbPile] = DataPile
 
+    def getScores(self):
+        scores = []
+        for joueur in self.getJoueurs():
+            scores.append(joueur.getScore())
+        return scores
 
-class Player():
+
+class Player:
     def __init__(self, name, cartes, score=0, isReady=False):
         self._cartes = cartes
         self._score = score
@@ -131,6 +148,9 @@ class Player():
 
     def setScore(self, score):
         self._score = score
+
+    def setNewScore(self, score):
+        self._score += score
 
     def setName(self, name):
         self._name = name
@@ -154,19 +174,22 @@ class Player():
 G = Game()
 # comme on n'a pas précisé le nombre de joueurs, on a automatiquement 2 joueurs
 # on va regarder les cartes du Joueur 0
-cartesJ0 = G.getJoueurs()[0].getCartes()
-print(f"cartes de J0> {cartesJ0}")
-# on va regarder les cartes du Joueur 1
-cartesJ1 = G.getJoueurs()[1].getCartes()
-print(f"cartes de J1> {cartesJ1}")
-# on va regarder les cartes des piles
-print(f"cartes des piles> {G.getPiles()}")
-# on va faire jouer le Joueur 0 artificielement. il jouera automatiquement sa premiere carte.
-print(f"J0 joue la carte {cartesJ0[0]}")
-G.validCarte(cartesJ0[0], 0)
-print(f"J1 joue la carte {cartesJ1[0]}")
-G.validCarte(cartesJ1[0], 1)
-# on teste pour jouer
-G.CheckReady()
-# on re affiche la pile
-print(f"cartes des piles> {G.getPiles()}")
+for i in range(8):
+    print(f"--------tour {i}---------------")
+    cartesJ0 = G.getJoueurs()[0].getCartes()
+    print(f"cartes de J0> {cartesJ0}")
+    # on va regarder les cartes du Joueur 1
+    cartesJ1 = G.getJoueurs()[1].getCartes()
+    print(f"cartes de J1> {cartesJ1}")
+    # on va regarder les cartes des piles
+    print(f"cartes des piles> {G.getPiles()}")
+    # on va faire jouer le Joueur 0 artificielement. il jouera automatiquement sa premiere carte.
+    print(f"J0 joue la carte {cartesJ0[0]}")
+    G.validCarte(cartesJ0[0], 0)
+    print(f"J1 joue la carte {cartesJ1[0]}")
+    G.validCarte(cartesJ1[0], 1)
+    # on teste pour jouer
+    G.CheckReady()
+    # on re affiche la pile
+    print(f"cartes des piles> {G.getPiles()}")
+    print("scores des joueurs :", G.getScores())

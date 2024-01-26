@@ -46,7 +46,7 @@ def start_server():
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     # Bind the socket to a specific address and port
-    server_socket.bind(('0.0.0.0', 8080))
+    server_socket.bind(('10.10.41.27', 8080))
 
     # Enable the server to accept connections
     server_socket.listen(5)

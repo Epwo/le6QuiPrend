@@ -16,8 +16,8 @@ def start_client():
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     # Connect to the server
-    client_socket.connect(('localhost', 8080))
-
+    client_socket.connect(('10.10.41.27', 8080))
+    # attention a bien prendre l'adresse ip de la machine serveur, en wifi, pas en ethernet !!
     # Start a thread to receive messages from the server
     receive_thread = threading.Thread(target=receive_messages, args=(client_socket,))
     receive_thread.start()

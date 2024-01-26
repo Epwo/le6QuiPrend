@@ -87,17 +87,36 @@ class Game:
             # FAIRE cas ou la carte est plus petite que la plus petite carte de la pile
             print(piles)
             for pile in piles:
-                deltas.append(abs(pile[-1] - CarteJoueur))
-            print(
-                f"la carte de Joueur {listeCartes.index(CarteJoueur)} est la plus proche de la pile {deltas.index(min(deltas))}")
-            # on va donc ajouter la carte du joueur à la pile la plus proche
-            self.AddCarteToPile(CarteJoueur, deltas.index(min(deltas)))
+                deltas.append(CarteJoueur - pile[-1])
+            print('deltas >', deltas)
+            # on va check si tt les deltas sont negatifs, ce qui signifie que la carte est plus petite que toutes les
+            # cartes des piles
+            if all(delta < 0 for delta in deltas):
+                # on va donc demander au joueur de choisir la pile qu'il va remplacer
+                # on va donc afficher les piles
+                print(f"Voici les piles : {piles}")
+                print("veuillez choisir une des piles que vous allez remplacer, vous récupereez les vachettes de la "
+                      "pile choisie")
+                choice = input("veuillez choisir une pile : 0,1,2,3 :")
+                while deltas[int(choice)] > 0:
+                    print("vous ne pouvez que prendre une pile qui est plus petite que votre carte")
+                    choice = input("veuillez choisir une pile : 0,1,2,3 :")
+                # on va donc remplacer la pile choisie par la carte du joueur
+                self.SetPile(int(choice), [CarteJoueur])
+            else:
+                print(
+                    f"la carte de Joueur {listeCartes.index(CarteJoueur)} est la plus proche de la pile {deltas.index(min(deltas))}")
+                # on va donc ajouter la carte du joueur à la pile la plus proche
+                self.AddCarteToPile(CarteJoueur, deltas.index(min(deltas)))
 
     def getPiles(self):
         return self._piles
 
     def AddCarteToPile(self, carte, nbPile):
         self._piles[nbPile].append(carte)
+
+    def SetPile(self, nbPile, DataPile):
+        self._piles[nbPile] = DataPile
 
 
 class Player():

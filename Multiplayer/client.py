@@ -1,12 +1,14 @@
 import socket
 import threading
+# on va lire le fichier Master_ip.txt pour recuperer l'adresse ip du serveur
+ip = open("Master_ip.txt", "r").read()
 
 def receive_messages(client_socket):
     while True:
         try:
             # Receive and print messages from the server
             message = client_socket.recv(1024).decode('utf-8')
-            print(f"Received message: {message}")
+            print(f"\n Received message: {message}")
         except socket.error:
             # Break the loop if there is an error receiving data
             break
@@ -16,7 +18,7 @@ def start_client():
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     # Connect to the server
-    client_socket.connect(('10.10.41.27', 8080))
+    client_socket.connect((ip, 8080))
     # attention a bien prendre l'adresse ip de la machine serveur, en wifi, pas en ethernet !!
     # Start a thread to receive messages from the server
     receive_thread = threading.Thread(target=receive_messages, args=(client_socket,))

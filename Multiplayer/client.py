@@ -1,38 +1,69 @@
 import socket
 import threading
-# on va lire le fichier Master_ip.txt pour recuperer l'adresse ip du serveur
-ip = open("Master_ip.txt", "r").read()
+import time
 
-def receive_messages(client_socket):
-    while True:
+
+class ChatClient:
+    def __init__(self, server_address, server_port):
+        self.server_address = server_address
+        self.server_port = server_port
+        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.connected = False
+        self.ReceivedMessage = [None]
+
+    def GetReceivedMessages(self):
+        return self.ReceivedMessage
+
+    def receive_messages(self):
+        while self.connected:
+            try:
+                # Receive and print messages from the server
+                message = self.socket.recv(1024).decode('utf-8')
+                if message != self.ReceivedMessage[-1]:
+                    self.ReceivedMessage.append(message)
+                    print(f"new : {message}")
+                    print(f"messageS: {self.ReceivedMessage}")
+            except socket.error:
+                # Break the loop if there is an error receiving data
+                break
+
+    def send_message(self, message):
+        time.sleep(0.1)
+        if self.connected:
+            # Send the message to the server
+            self.socket.send(message.encode('utf-8'))
+
+    def connect(self):
         try:
-            # Receive and print messages from the server
-            message = client_socket.recv(1024).decode('utf-8')
-            print(f"\n Received message: {message}")
-        except socket.error:
-            # Break the loop if there is an error receiving data
-            break
+            self.socket.connect((self.server_address, self.server_port))
+            self.connected = True
 
-def start_client():
-    # Create a socket object
-    client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            # Start a thread to receive messages from the server
+            receive_thread = threading.Thread(target=self.receive_messages, daemon=True)
+            receive_thread.start()
 
-    # Connect to the server
-    client_socket.connect((ip, 8080))
-    # attention a bien prendre l'adresse ip de la machine serveur, en wifi, pas en ethernet !!
-    # Start a thread to receive messages from the server
-    receive_thread = threading.Thread(target=receive_messages, args=(client_socket,))
-    receive_thread.start()
+            # Send a test message after connecting
+            self.send_message('GetGameState')
+        except Exception as e:
+            print(f"Error connecting to the server: {e}")
 
-    while True:
-        # Get user input
-        message = input("Enter your message: ")
+    def close(self):
+        self.connected = False
+        self.socket.close()
 
-        # Send the message to the server
-        client_socket.send(message.encode('utf-8'))
-
-    # Close the socket
-    client_socket.close()
 
 if __name__ == "__main__":
-    start_client()
+    # Read the server IP from the file
+    server_ip = open("Master_ip.txt", "r").read().strip()
+
+    # Create a ChatClient instance and connect to the server
+    client = ChatClient(server_ip, 8080)
+    client.connect()
+    client.send_message("Hello, server!")
+    # Keep the main thread alive to allow background threads to run
+    try:
+        while True:
+            pass
+    except KeyboardInterrupt:
+        # Close the client when the user presses Ctrl+C
+        client.close()

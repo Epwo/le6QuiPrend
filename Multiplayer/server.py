@@ -1,70 +1,75 @@
 import socket
 import threading
 
-ip = open("Master_ip.txt", "r").read()
-clients = []
 
+class ChatServer:
+    def __init__(self, host, port):
+        self.host = host
+        self.port = port
+        self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.clients = []
+        self.received_messages = []
 
-def broadcast(message, sender_socket, sender_name):
-    for client in clients:
-        if client != sender_socket:
+    def GetReceivedMessages(self):
+        return self.received_messages
+
+    def broadcast(self, message):
+        for client in self.clients:
             try:
-                client.send(f"{sender_name} : {message.decode('utf-8')}".encode('utf-8'))
+                client.send(message)
             except socket.error:
                 # Remove the client if unable to send a message to it
-                clients.remove(client)
+                self.clients.remove(client)
 
+    def send_to_client(self, client_index, message, sender_name):
+        if 0 <= client_index < len(self.clients):
+            try:
+                self.clients[client_index].send(f"{sender_name} : {message}".encode('utf-8'))
+            except socket.error:
+                # Remove the client if unable to send a message to it
+                self.clients.remove(self.clients[client_index])
 
-def handle_client(client_socket):
-    while True:
-        try:
-            # on recupere l'objet socket du client dans client_socket
-            # on va recuperer les donnees
-            data = client_socket.recv(1024)
-            if not data:
-                # si pas de donnees, on sort de la boucle handle_client, car plus rien a faire
+    def handle_client(self, client_socket):
+        while True:
+            try:
+                data = client_socket.recv(1024)
+                if not data:
+                    break
+
+                print(f"Received message: {data.decode('utf-8')} from {client_socket.getpeername()}")
+                ClientName = f"Joueur{self.clients.index(client_socket)}"
+                self.received_messages.append([ClientName, data.decode('utf-8')])
+                self.broadcast(('You:'+ClientName).encode('utf-8'))
+
+            except socket.error:
+                self.clients.remove(client_socket)
                 break
 
-            print(f"Received message: {data.decode('utf-8')} from {client_socket.getpeername()}")
-            if client_socket in clients:
-                # on envoie les donnees a tous les clients
-                print(f"message du client {clients.index(client_socket)}")
-            # Broadcast the message to all clients
-            ClientName = f"Joueur{clients.index(client_socket)}"
-            broadcast(data, client_socket, ClientName)
+        client_socket.close()
 
-        except socket.error:
-            # Remove the client if there is an error receiving data
-            clients.remove(client_socket)
-            break
+    def GetClients(self):
+        return self.clients
 
-    # Close the client socket
-    client_socket.close()
+    def start_server(self):
+        self.server_socket.bind((self.host, self.port))
+        self.server_socket.listen(5)
+        print(f"Server listening on {self.host}:{self.port}")
 
+        while True:
+            client_socket, addr = self.server_socket.accept()
+            print(f"Accepted connection from {addr}")
 
-def start_server():
-    # Create a socket object
-    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.clients.append(client_socket)
 
-    # Bind the socket to a specific address and port
-    server_socket.bind((ip, 8080))
+            client_handler = threading.Thread(target=self.handle_client, args=(client_socket,))
+            client_handler.start()
 
-    # Enable the server to accept connections
-    server_socket.listen(5)
-    print("Server listening on port 8080")
-
-    while True:
-        # Accept a connection from a client
-        client_socket, addr = server_socket.accept()
-        print(f"Accepted connection from {addr}")
-
-        # Add the client to the list
-        clients.append(client_socket)
-
-        # Create a thread to handle the client
-        client_handler = threading.Thread(target=handle_client, args=(client_socket,))
-        client_handler.start()
+    def close(self):
+        for client in self.clients:
+            client.close()
+        self.server_socket.close()
 
 
 if __name__ == "__main__":
-    start_server()
+    server = ChatServer("localhost", 8080)
+    server.start_server()

@@ -15,12 +15,12 @@ def main():
     # Create a ChatClient instance and connect to the server
     clientChat = client.ChatClient(server_ip, 8080)
     clientChat.connect()
-    clientChat.send_message("Hello, server!")
-    # Keep the main thread alive to allow background threads to run
-    # Interface Vars
+    time.sleep(0.1)
     size = 1
     Player = None
     GameState = {"Piles": [[], [], [], []], "Joueurs": {"isReady": [], "score": [], "cartes": []}}
+    # on fait une boucle infini pour pouvoir utiliser les threads.
+    clickedTemp = 0
     try:
         while True:
             msg = clientChat.GetReceivedMessages()
@@ -28,12 +28,14 @@ def main():
             if msg[-1][:10] == "You:Joueur" and Player is None:
                 Player = int(msg[-1][-1])
                 print("I now am player " + str(Player))
+                affich.SetWhoIAm(Player)
             # les and player is none et  != gamestate est pour éviter de constamment reecrire ces variables
             elif msg[-1][:10] == "GameState:" and eval(msg[-1][10:]) != GameState:
                 GameState = eval(msg[-1][10:])
                 print(f"GameState is now : {GameState}")
 
-            if Player is not None and GameState != {"Piles": [[], [], [], []], "Joueurs": {"isReady": [], "score": [], "cartes": []}}:
+            if Player is not None and GameState != {"Piles": [[], [], [], []],
+                                                    "Joueurs": {"isReady": [], "score": [], "cartes": []}}:
                 affich.SetCards(GameState["Joueurs"]["cartes"][Player])
                 affich.SetPiles(GameState["Piles"])
                 dictJoueurs = []
@@ -41,6 +43,11 @@ def main():
                     dictJoueurs.append({"name": "Joueur " + str(i), "score": GameState["Joueurs"]["score"][i],
                                         "isReady": GameState["Joueurs"]["isReady"][i]})
                 affich.SetPlayers(dictJoueurs)
+                clicked = affich.GetClickedCards()
+                if clicked is not None and clicked != clickedTemp:
+                    clickedTemp = clicked
+                    clientChat.send_message(str(clicked))
+                affich.displayPlayers()
                 affich.runGameLoop()
 
 

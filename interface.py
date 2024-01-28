@@ -5,6 +5,8 @@ from PIL import Image
 class GameInterface:
     def __init__(self, size):
         # Paramètrer l'affichage
+        self.NbPlayerMe = None
+        self.clicked_card = None
         self.piles = [[], [], [], []]
         self.mouse_pos = None
         self.cards = []
@@ -19,13 +21,6 @@ class GameInterface:
         # Créer la fenêtre
         self.screen = pygame.display.set_mode((self.width, self.height))
         pygame.display.set_caption("Le 6 qui prend")
-
-        # Ajouter les paramètres joueurs
-        self.font = pygame.font.Font(None, 36)
-        # !SET SCORE!
-        self.score_text = self.font.render("Votre score: 1000", True, (255, 255, 255))
-        self.score_rect = self.score_text.get_rect()
-        self.score_rect.topleft = (20, 20)  # Modifier la position ici
 
         self.card_images = {}
         self.hovered_images = {}
@@ -50,6 +45,9 @@ class GameInterface:
     def SetCards(self, cards):
         self.cards = cards
 
+    def SetWhoIAm(self, nb):
+        self.NbPlayerMe = nb
+
     def SetPiles(self, piles):
         self.piles = piles
 
@@ -64,19 +62,23 @@ class GameInterface:
         for i, player in enumerate(self.players):
             size = self.size
             # Display player name
-            player_name_text = playerFont.render(player["name"], True, (255, 255, 255))
+            if player["name"][-1] == str(self.NbPlayerMe):
+                couleur = (255, 0, 0)
+            else:
+                couleur = (255, 255, 255)
+            player_name_text = playerFont.render(player["name"], True, couleur)
             player_name_rect = player_name_text.get_rect()
-            player_name_x = 350*size  # Adjust the starting position of player names
+            player_name_x = 350 * size  # Adjust the starting position of player names
             player_name_y = i * (player_name_rect.height + spacing) + 40  # Adjust vertical position
             self.screen.blit(player_name_text, (player_name_x, player_name_y))
             if player["isReady"]:
                 TickText = playerFont.render("√", True, (255, 255, 255))
-                self.screen.blit(TickText, (player_name_x-10*size, player_name_y))
+                self.screen.blit(TickText, (player_name_x - 10 * size, player_name_y))
 
             # Display player score underneath the name
             player_score_text = scoreFont.render(f"{player['score']} vachettes ", True, (255, 255, 255))
             player_score_rect = player_score_text.get_rect()
-            player_score_x = 350*size  # Adjust the starting position of player scores
+            player_score_x = 350 * size  # Adjust the starting position of player scores
             player_score_y = player_name_y + player_name_rect.height  # Place score underneath the name
             self.screen.blit(player_score_text, (player_score_x, player_score_y))
 
@@ -99,9 +101,6 @@ class GameInterface:
         self.screen.blit(image_surface,
                          (self.player_pos[0] - image_rect.width // 2, self.player_pos[1] - image_rect.height // 2))
 
-        # Afficher le score
-        self.screen.blit(self.score_text, self.score_rect)
-
         # Mise à jour de l'affichage
         pygame.display.flip()
 
@@ -118,7 +117,7 @@ class GameInterface:
 
                 # Calculer la position verticale de la carte pour la centrer
                 card_y = (self.size * 230) - (
-                            hovered_image.get_height() / 2)  # Modifier la position verticale ici si nécessaire
+                        hovered_image.get_height() / 2)  # Modifier la position verticale ici si nécessaire
 
                 # Check if the mouse is over the image
                 image_rect = pygame.Rect(card_x, card_y, hovered_image.get_width(), hovered_image.get_height())
@@ -166,6 +165,9 @@ class GameInterface:
         # Mise à jour de l'affichage
         pygame.display.flip()
 
+    def GetClickedCards(self):
+        return self.clicked_card
+
     def runGameLoop(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -173,12 +175,11 @@ class GameInterface:
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 # Get the mouse position
                 mouse_pos = pygame.mouse.get_pos()
-
                 # Check if a card was clicked
-                clicked_card = self.checkCardClick()
+                self.clicked_card = self.checkCardClick()
                 # If a card was clicked, print a message
-                if clicked_card is not None:
-                    print(f"Card {clicked_card} clicked!")
+                if self.clicked_card is not None:
+                    print(f"Card {self.clicked_card} clicked!")
 
         # Appeler la méthode pour afficher le tableau
         self.displayBoard(self.size)
@@ -188,6 +189,7 @@ class GameInterface:
         self.displayPlayers()
         pygame.display.flip()
         time.sleep(0.05)
+
     # Quitter pygame une fois la boucle terminée
     pygame.quit()
 
@@ -195,7 +197,7 @@ class GameInterface:
 if __name__ == "__main__":
     interface = GameInterface(size=3)
     interface.SetCards([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
-    interface.SetPiles([[1, 2, 3, 4], [55,23,64], [1], [5]])
+    interface.SetPiles([[1, 2, 3, 4], [55, 23, 64], [1], [5]])
     interface.SetPlayers([{"name": "Joueur 1", "score": 0, "isReady": True},
                           {"name": "Joueur 2", "score": 0, "isReady": False},
                           {"name": "Joueur 3", "score": 0, "isReady": False}])

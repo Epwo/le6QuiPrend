@@ -29,6 +29,10 @@ class ChatServer:
                 # Remove the client if unable to send a message to it
                 self.clients.remove(self.clients[client_index])
 
+    def EmptyMessages(self,nbPlayer):
+        self.received_messages = self.received_messages[:-nbPlayer]
+
+
     def handle_client(self, client_socket):
         while True:
             try:
@@ -36,10 +40,10 @@ class ChatServer:
                 if not data:
                     break
 
-                print(f"Received message: {data.decode('utf-8')} from {client_socket.getpeername()}")
                 ClientName = f"Joueur{self.clients.index(client_socket)}"
+                print(f"Received message: {data.decode('utf-8')} from {ClientName} ({client_socket.getpeername()})")
                 self.received_messages.append([ClientName, data.decode('utf-8')])
-                self.broadcast(('You:'+ClientName).encode('utf-8'))
+                self.broadcast(('You:' + ClientName).encode('utf-8'))
 
             except socket.error:
                 self.clients.remove(client_socket)
@@ -49,6 +53,9 @@ class ChatServer:
 
     def GetClients(self):
         return self.clients
+
+    def GetMessages(self):
+        return self.received_messages
 
     def start_server(self):
         self.server_socket.bind((self.host, self.port))

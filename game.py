@@ -49,10 +49,13 @@ class Game:
         if self.nbJoueurs == nb:
             # tous les joueurs ont validé leur carte
             self.play()
+            # une fois qu'on a fini de jouer on remet la liste Ready a 0 pour chaque joueur
+            self._ReadyList = [0] * len(self._ReadyList)
         elif self.nbJoueurs * (2 / 3) <= nb:
             # plus de 2/3 des joueurs ont validé leur carte
             # on lance le TIMER
             print("ATTENTION : plus de 2/3 des joueurs ont validé leur carte, le jeu va commencer !")
+
 
     def GetCards(self):
         return self._cards

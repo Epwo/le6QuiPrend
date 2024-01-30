@@ -1,5 +1,6 @@
 import socket
 import threading
+import time
 
 
 class ChatServer:
@@ -14,6 +15,7 @@ class ChatServer:
         return self.received_messages
 
     def broadcast(self, message):
+        time.sleep(0.05)
         for client in self.clients:
             try:
                 client.send(message)

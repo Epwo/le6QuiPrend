@@ -4,7 +4,6 @@ Exemple : le joueur 1 (client 1) a validé la carte 12, il va donc envoyer au se
 
 '''
 import time
-
 import interface
 from Multiplayer import client
 
@@ -32,8 +31,7 @@ def main():
                 affich.SetWhoIAm(Player)
             # les and player is none et  != gamestate est pour éviter de constamment reecrire ces variables
             elif msg[-1][:10] == "GameState:" and msg[-1][10:] != str(GameState):
-                last_game_state_str = msg[-1][10:]
-                GameState = eval(last_game_state_str)
+                GameState = eval(msg[-1][10:])
                 print(f"GameState is now : {GameState}")
 
             if Player is not None and GameState != {"Piles": [[], [], [], []],

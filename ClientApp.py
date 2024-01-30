@@ -30,7 +30,7 @@ def main():
                 print("I now am player " + str(Player))
                 affich.SetWhoIAm(Player)
             # les and player is none et  != gamestate est pour éviter de constamment reecrire ces variables
-            elif msg[-1][:10] == "GameState:" and eval(msg[-1][10:]) != GameState:
+            elif msg[-1][:10] == "GameState:" and msg[-1][10:] != str(GameState):
                 GameState = eval(msg[-1][10:])
                 print(f"GameState is now : {GameState}")
 

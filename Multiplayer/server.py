@@ -15,7 +15,7 @@ class ChatServer:
         return self.received_messages
 
     def broadcast(self, message):
-        time.sleep(0.05)
+        time.sleep(0.05)# on attend que le mesage precedent ai été envoyé
         for client in self.clients:
             try:
                 client.send(message)
@@ -24,6 +24,7 @@ class ChatServer:
                 self.clients.remove(client)
 
     def send_to_client(self, client_index, message, sender_name):
+        time.sleep(0.05)# on attend que le mesage precedent ai été envoyé
         if 0 <= client_index < len(self.clients):
             try:
                 self.clients[client_index].send(f"{sender_name} : {message}".encode('utf-8'))

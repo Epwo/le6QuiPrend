@@ -23,6 +23,7 @@ def main():
     clickedTemp = 0
     try:
         while True:
+            time.sleep(0.1)
             msg = clientChat.GetReceivedMessages()
             # print(f"Player : {Player}")
             if msg[-1][:10] == "You:Joueur" and Player is None:
@@ -31,7 +32,8 @@ def main():
                 affich.SetWhoIAm(Player)
             # les and player is none et  != gamestate est pour éviter de constamment reecrire ces variables
             elif msg[-1][:10] == "GameState:" and msg[-1][10:] != str(GameState):
-                GameState = eval(msg[-1][10:])
+                last_game_state_str = msg[-1][10:]
+                GameState = eval(last_game_state_str)
                 print(f"GameState is now : {GameState}")
 
             if Player is not None and GameState != {"Piles": [[], [], [], []],

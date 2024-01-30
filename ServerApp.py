@@ -18,7 +18,7 @@ def main():
     try:
         while True:
             # on va actualiser l'etat du jeu toute les secondes
-            time.sleep(0.5)
+            time.sleep(0.2)
             if len(chat_server.GetClients()) == len(G.getJoueurs()):
                 # on peut lancer la logique du jeu tt le monde est la !
                 # on va donc envoyer a chaque client le GameState ( etat du jeu)

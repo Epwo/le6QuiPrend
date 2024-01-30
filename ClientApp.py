@@ -14,7 +14,7 @@ def main():
     # Create a ChatClient instance and connect to the server
     clientChat = client.ChatClient(server_ip, 8080)
     clientChat.connect()
-    time.sleep(0.1)
+    time.sleep(0.1)# on attends une réponse du serveur
     size = 1
     Player = None
     GameState = {"Piles": [[], [], [], []], "Joueurs": {"isReady": [], "score": [], "cartes": []}}

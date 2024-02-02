@@ -30,6 +30,7 @@ class ChatClient:
         if self.connected:
             # Send the message to the server
             self.socket.send(message.encode('utf-8'))
+        time.sleep(0.05)
 
     def connect(self):
         try:

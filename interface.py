@@ -12,7 +12,7 @@ class GameInterface:
         self.cards = []
         self.players = []
         self.size = size
-        self.width, self.height = 400 * size, 250 * size
+        self.width, self.height = 430 * size, 250 * size
         self.player_pos = (self.width // 2, self.height // 2)
 
         # Initialiser pygame

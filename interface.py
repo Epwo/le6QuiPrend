@@ -113,7 +113,7 @@ class GameInterface:
 
             if original_image and hovered_image:
                 # Calculer la position horizontale de la carte en fonction de l'index
-                card_x = i * (hovered_image.get_width()) + 20  # Modifier la position de départ ici
+                card_x = i * (hovered_image.get_width()) + 60  # Modifier la position de départ ici
 
                 # Calculer la position verticale de la carte pour la centrer
                 card_y = (self.size * 230) - (

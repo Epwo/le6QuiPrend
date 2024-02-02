@@ -17,8 +17,8 @@ def main():
                                                     "cartes": G.getCartes()}}
     try:
         while True:
-            # on va actualiser l'etat du jeu toute les secondes
-            time.sleep(0.2)
+            # on va actualiser l'etat du jeu toute les 0.4 secondes, pour eviter que les messages ne se melangent
+            time.sleep(0.4)
             if len(chat_server.GetClients()) == len(G.getJoueurs()):
                 # on peut lancer la logique du jeu tt le monde est la !
                 # on va donc envoyer a chaque client le GameState ( etat du jeu)

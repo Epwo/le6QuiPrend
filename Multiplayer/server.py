@@ -10,21 +10,23 @@ class ChatServer:
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.clients = []
         self.received_messages = []
-        self.broadcast_semaphore = threading.Semaphore(value=1)  # Semaphore to control access
 
     def GetReceivedMessages(self):
         return self.received_messages
 
     def broadcast(self, message):
-        with self.broadcast_semaphore:  # on utilise un semaphore pour eviter que deux threads n'ecrivent en meme temps
-            for client in self.clients:
-                try:
-                    client.send(message)
-                except socket.error:
-                    # Remove the client if unable to send a message to it
-                    self.clients.remove(client)
+        # afin d'éviter une concatenation post send, on va écrire 'lafin' du message avec '\end'
+        message = (message.decode('utf-8') + '\\end').encode('utf-8')
+        for client in self.clients:
+            try:
+                client.send(message)
+            except socket.error:
+                # Remove the client if unable to send a message to it
+                self.clients.remove(client)
+        time.sleep(0.05)
 
     def send_to_client(self, client_index, message, sender_name):
+
         time.sleep(0.2)  # on attend que le mesage precedent ai été envoyé
         if 0 <= client_index < len(self.clients):
             try:
@@ -47,7 +49,7 @@ class ChatServer:
                 print(f"Received message: {data.decode('utf-8')} from {ClientName} ({client_socket.getpeername()})")
                 self.received_messages.append([ClientName, data.decode('utf-8')])
                 self.broadcast(('You:' + ClientName).encode('utf-8'))
-                time.sleep(0.01)
+                time.sleep(0.1)
 
             except socket.error:
                 self.clients.remove(client_socket)

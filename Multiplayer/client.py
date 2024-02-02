@@ -19,6 +19,9 @@ class ChatClient:
             try:
                 # Receive and print messages from the server
                 message = self.socket.recv(1024).decode('utf-8')
+                endSeparator = message.find('\\end')
+                if endSeparator != -1:
+                    message = message[:endSeparator]
                 if message != self.ReceivedMessage[-1]:
                     self.ReceivedMessage.append(message)
                     print(f"new : {message}")
@@ -30,7 +33,6 @@ class ChatClient:
         if self.connected:
             # Send the message to the server
             self.socket.send(message.encode('utf-8'))
-        time.sleep(0.05)
 
     def connect(self):
         try:

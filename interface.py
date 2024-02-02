@@ -1,6 +1,7 @@
 import pygame, os, time
 from PIL import Image
-
+import tkinter as tk
+from tkinter import messagebox
 
 class GameInterface:
     def __init__(self, size):
@@ -17,6 +18,7 @@ class GameInterface:
 
         # Initialiser pygame
         pygame.init()
+        self.font = pygame.font.Font(None, 36)
 
         # Créer la fenêtre
         self.screen = pygame.display.set_mode((self.width, self.height))
@@ -50,6 +52,18 @@ class GameInterface:
 
     def SetPiles(self, piles):
         self.piles = piles
+
+    def PopUp(self, nbPoint):
+        fenetre_principale = tk.Tk()
+        label_texte = tk.Label(fenetre_principale, text="Veuillez choisir une des piles que vous allez remplacer. Vous récupérerez les vachettes de la pile choisie.")
+        label_texte.pack(pady=10)
+
+        # Création d'un bouton pour afficher la fenêtre pop-up
+        for i in range(0, 4):
+            bouton_pile = tk.Button(fenetre_principale, text=f"Pile {i} qui vaut {nbPoint[i]} vachettes")
+            bouton_pile.pack(pady=10)
+        # Boucle principale
+        fenetre_principale.mainloop()
 
     def displayPlayers(self):
         # Font for displaying player names and scores
@@ -187,8 +201,10 @@ class GameInterface:
         self.displayCards()
         self.displayPiles()
         self.displayPlayers()
+
+        # Afficher la fenêtre pop-up si elle existe
         pygame.display.flip()
-        time.sleep(0.05)
+        time.sleep(0.5)
 
     # Quitter pygame une fois la boucle terminée
     pygame.quit()
@@ -203,3 +219,4 @@ if __name__ == "__main__":
                           {"name": "Joueur 3", "score": 0, "isReady": False}])
     while 1:
         interface.runGameLoop()
+        #interface.PopUp([20, 10, 41, 41])

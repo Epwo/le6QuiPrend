@@ -1,7 +1,6 @@
 # let's start this !
 import function
 
-
 class Game:
     def __init__(self, nb_players=2):
         # self._board = Board()

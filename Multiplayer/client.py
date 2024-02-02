@@ -24,13 +24,12 @@ class ChatClient:
                     print(f"new : {message}")
                     print(f"messageS: {self.ReceivedMessage}")
             except socket.error:
-                time.sleep(0.1)
+                break
 
     def send_message(self, message):
         if self.connected:
             # Send the message to the server
             self.socket.send(message.encode('utf-8'))
-        time.sleep(0.2)
 
     def connect(self):
         try:

@@ -10,21 +10,22 @@ class ChatServer:
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.clients = []
         self.received_messages = []
+        self.broadcast_semaphore = threading.Semaphore(value=1)  # Semaphore to control access
 
     def GetReceivedMessages(self):
         return self.received_messages
 
     def broadcast(self, message):
-        time.sleep(0.2)# on attend que le mesage precedent ai été envoyé
-        for client in self.clients:
-            try:
-                client.send(message)
-            except socket.error:
-                # Remove the client if unable to send a message to it
-                self.clients.remove(client)
+        with self.broadcast_semaphore:  # on utilise un semaphore pour eviter que deux threads n'ecrivent en meme temps
+            for client in self.clients:
+                try:
+                    client.send(message)
+                except socket.error:
+                    # Remove the client if unable to send a message to it
+                    self.clients.remove(client)
 
     def send_to_client(self, client_index, message, sender_name):
-        time.sleep(0.2)# on attend que le mesage precedent ai été envoyé
+        time.sleep(0.2)  # on attend que le mesage precedent ai été envoyé
         if 0 <= client_index < len(self.clients):
             try:
                 self.clients[client_index].send(f"{sender_name} : {message}".encode('utf-8'))
@@ -32,9 +33,8 @@ class ChatServer:
                 # Remove the client if unable to send a message to it
                 self.clients.remove(self.clients[client_index])
 
-    def EmptyMessages(self,nbPlayer):
+    def EmptyMessages(self, nbPlayer):
         self.received_messages = self.received_messages[:-nbPlayer]
-
 
     def handle_client(self, client_socket):
         while True:
@@ -47,6 +47,7 @@ class ChatServer:
                 print(f"Received message: {data.decode('utf-8')} from {ClientName} ({client_socket.getpeername()})")
                 self.received_messages.append([ClientName, data.decode('utf-8')])
                 self.broadcast(('You:' + ClientName).encode('utf-8'))
+                time.sleep(0.01)
 
             except socket.error:
                 self.clients.remove(client_socket)

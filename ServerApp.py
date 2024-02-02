@@ -40,7 +40,8 @@ def main():
                         # donc msg[-1][1] = '2'
                         print(f"carte {int(msg[-1][1])} validée pour {msg[-1][0]}")
                         G.validCarte(int(msg[-1][1]), int(msg[-1][0][-1]))
-                        # on va supprimer les derniers messages (nb Players) recu (= les cartes validees) maitenant qu'elles ont été jouées.
+                        # on va supprimer les derniers messages (nb Players) recu (= les cartes validees) maitenant
+                        # qu'elles ont été jouées.
                         if all(value != 0 for value in G.getReadyList()):
                             chat_server.EmptyMessages(nbPlayer)
                 G.CheckReady()

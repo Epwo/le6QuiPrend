@@ -7,7 +7,7 @@ import time
 def main():
     # Read the server IP from the file
     server_ip = open("Multiplayer/Master_ip.txt", "r").read().strip()
-    nbPlayer = 3
+    nbPlayer = 2
     # Create a ChatServer instance and connect to the server
     chat_server = server.ChatServer(server_ip, 8080)
     chat_server_thread = threading.Thread(target=chat_server.start_server)

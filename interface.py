@@ -3,6 +3,7 @@ from PIL import Image
 import tkinter as tk
 from tkinter import messagebox
 
+
 class GameInterface:
     def __init__(self, size):
         # Paramètrer l'affichage
@@ -13,6 +14,7 @@ class GameInterface:
         self.cards = []
         self.players = []
         self.size = size
+        self.PileChoice = None
         self.width, self.height = 430 * size, 250 * size
         self.player_pos = (self.width // 2, self.height // 2)
 
@@ -38,6 +40,9 @@ class GameInterface:
             else:
                 print(f"Image not found: {image_path}")
 
+    def GetPileChoice(self):
+        return self.PileChoice
+
     def SetScore(self, score):
         self.score_text = self.font.render("Votre score: " + str(score), True, (255, 255, 255))
 
@@ -54,15 +59,22 @@ class GameInterface:
         self.piles = piles
 
     def PopUp(self, nbPoint):
+        def on_bouton_click(PileChoice):
+            print(f"----------\n"
+                  f"Choix du bouton : Pile {PileChoice} qui vaut {nbPoint[PileChoice]} vachettes")
+            fenetre_principale.destroy()  # Fermer la fenêtre après avoir affiché le choix
+            self.PileChoice = PileChoice
+
         fenetre_principale = tk.Tk()
-        label_texte = tk.Label(fenetre_principale, text="Veuillez choisir une des piles que vous allez remplacer. Vous récupérerez les vachettes de la pile choisie.")
+        label_texte = tk.Label(fenetre_principale,
+                               text="Veuillez choisir une des piles que vous allez remplacer. Vous récupérerez les vachettes de la pile choisie.")
         label_texte.pack(pady=10)
 
-        # Création d'un bouton pour afficher la fenêtre pop-up
-        for i in range(0, 4):
-            bouton_pile = tk.Button(fenetre_principale, text=f"Pile {i} qui vaut {nbPoint[i]} vachettes")
+        for i in range(4):
+            bouton_pile = tk.Button(fenetre_principale, text=f"Pile {i} qui vaut {nbPoint[i]} vachettes",
+                                    command=lambda pile=i: on_bouton_click(pile))
             bouton_pile.pack(pady=10)
-        # Boucle principale
+
         fenetre_principale.mainloop()
 
     def displayPlayers(self):
@@ -204,7 +216,7 @@ class GameInterface:
 
         # Afficher la fenêtre pop-up si elle existe
         pygame.display.flip()
-        time.sleep(0.5)
+        time.sleep(0.05)
 
     # Quitter pygame une fois la boucle terminée
     pygame.quit()
@@ -217,6 +229,6 @@ if __name__ == "__main__":
     interface.SetPlayers([{"name": "Joueur 1", "score": 0, "isReady": True},
                           {"name": "Joueur 2", "score": 0, "isReady": False},
                           {"name": "Joueur 3", "score": 0, "isReady": False}])
+    interface.PopUp([20, 10, 41, 41])
     while 1:
         interface.runGameLoop()
-        #interface.PopUp([20, 10, 41, 41])

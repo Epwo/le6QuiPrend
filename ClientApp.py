@@ -33,6 +33,11 @@ def main():
             elif msg[-1][:10] == "GameState:" and msg[-1][10:] != str(GameState):
                 GameState = eval(msg[-1][10:])
                 print(f"GameState is now : {GameState}")
+            elif msg[-1][:11] == "ChoosePile:" and msg[-1] != msg[-2]:
+                print("POPUP")
+                affich.PopUp(eval(msg[-1][11:]))
+                print(f"il a choisit : {affich.GetPileChoice()}")
+                clientChat.send_message("ChoixPile:"+str(affich.GetPileChoice()))
 
             if Player is not None and GameState != {"Piles": [[], [], [], []],
                                                     "Joueurs": {"isReady": [], "score": [], "cartes": []}}:

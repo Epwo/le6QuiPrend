@@ -7,7 +7,8 @@ import time
 def main():
     # Read the server IP from the file
     server_ip = open("Multiplayer/Master_ip.txt", "r").read().strip()
-    nbPlayer = 2
+    nbPlayer = 1
+    flagChangePile = False
     # Create a ChatServer instance and connect to the server
     chat_server = server.ChatServer(server_ip, 8080)
     chat_server_thread = threading.Thread(target=chat_server.start_server)
@@ -31,6 +32,17 @@ def main():
 
                 if msg[-1][1] == 'GetGameState':
                     chat_server.broadcast(('GameState:' + str(GameState)).encode('utf-8'))
+                elif msg[-1][1][:10] == 'ChoixPile:':
+                    if not flagChangePile:
+                        flagChangePile = True
+                        print(f"Joueur {msg[-1][0][-1]} a choisi la pile {msg[-1][1][10:]}")
+                        G.replacePile(int(msg[-1][1][10:]), int(msg[-1][0][-1]))
+                        time.sleep(1)
+                        flagChangePile = False
+                    flagChangePile = True
+                    print(msg[-1][0][-1]+" a choisi la pile : " + msg[-1][1][10:])
+                    G.replacePile(int(msg[-1][1][10:]), int(msg[-1][0][-1]))
+                    time.sleep(1)
                 elif msg[-1] is not None:
                     IsReady = G.getReadyList()[int(msg[-1][0][-1])]
                     # on va verifier si on a pas deja validé la carte
@@ -44,10 +56,16 @@ def main():
                         # qu'elles ont été jouées.
                         if all(value != 0 for value in G.getReadyList()):
                             chat_server.EmptyMessages(nbPlayer)
-                G.CheckReady()
-
-
-
+                if G.CheckReady():
+                    etat = G.play()
+                    if etat != "continue":
+                        joueur, cartes, score = etat
+                        # on a un probleme, il faut remplacer une pile
+                        # on va demaner au joueur en question de choisir la pile qu'il veut.
+                        print(f"Joueur {joueur} a joué la carte {cartes}, et doit choisir une pile")
+                        for i in range(len(score)):
+                            print(f"pile {i} : {score[i]}")
+                        chat_server.send_to_client(joueur, f"ChoosePile:{score}")
 
 
     except KeyboardInterrupt:

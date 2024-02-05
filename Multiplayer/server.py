@@ -59,9 +59,6 @@ class ChatServer:
     def GetClients(self):
         return self.clients
 
-    def GetMessages(self):
-        return self.received_messages
-
     def start_server(self):
         self.server_socket.bind((self.host, self.port))
         self.server_socket.listen(5)

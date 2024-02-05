@@ -90,6 +90,9 @@ class Game:
 
         CarteJoueur = listeCartes[NbJoueur]
         Joueur = self.getJoueurs()[NbJoueur]
+        if CarteJoueur == 0:
+            print("ERREUR : impossible de jouer carte 0")
+            return
         print('>', piles)
         print(">>", piles[int(choice)])
         print(

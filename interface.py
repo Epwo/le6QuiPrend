@@ -74,8 +74,9 @@ class GameInterface:
             bouton_pile = tk.Button(fenetre_principale, text=f"Pile {i} qui vaut {nbPoint[i]} vachettes",
                                     command=lambda pile=i: on_bouton_click(pile))
             bouton_pile.pack(pady=10)
-
+        fenetre_principale.wait_window()
         fenetre_principale.mainloop()
+
 
     def displayPlayers(self):
         # Font for displaying player names and scores

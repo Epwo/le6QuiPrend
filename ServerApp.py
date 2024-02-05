@@ -37,6 +37,10 @@ def main():
                         flagChangePile = True
                         print(f"Joueur {msg[-1][0][-1]} a choisi la pile {msg[-1][1][10:]}")
                         G.replacePile(int(msg[-1][1][10:]), int(msg[-1][0][-1]))
+                        print("---Pile changée---")
+                        print(chat_server.GetReceivedMessages())
+                        chat_server.EmptyMessages(nbPlayer)
+                        print(chat_server.GetReceivedMessages())
                         time.sleep(1)
                         flagChangePile = False
                     flagChangePile = True

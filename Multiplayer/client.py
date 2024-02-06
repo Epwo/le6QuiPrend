@@ -11,6 +11,7 @@ class ChatClient:
         self.connected = False
         self.ReceivedMessage = [None]
 
+
     def GetReceivedMessages(self):
         return self.ReceivedMessage
 

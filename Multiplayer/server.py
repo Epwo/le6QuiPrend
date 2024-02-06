@@ -25,12 +25,11 @@ class ChatServer:
                 self.clients.remove(client)
         time.sleep(0.05)
 
-    def send_to_client(self, client_index, message, sender_name):
-
+    def send_to_client(self, client_index, message):
         time.sleep(0.2)  # on attend que le mesage precedent ai été envoyé
         if 0 <= client_index < len(self.clients):
             try:
-                self.clients[client_index].send(f"{sender_name} : {message}".encode('utf-8'))
+                self.clients[client_index].send(message.encode('utf-8'))
             except socket.error:
                 # Remove the client if unable to send a message to it
                 self.clients.remove(self.clients[client_index])
@@ -59,9 +58,6 @@ class ChatServer:
 
     def GetClients(self):
         return self.clients
-
-    def GetMessages(self):
-        return self.received_messages
 
     def start_server(self):
         self.server_socket.bind((self.host, self.port))

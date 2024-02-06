@@ -1,6 +1,7 @@
 # let's start this !
 import function
 
+
 class Game:
     def __init__(self, nb_players=2):
         # self._board = Board()
@@ -9,7 +10,7 @@ class Game:
         self.isGameOver = False
         self._piles = self.CreatePiles(self._cards)
         self._dictScore = function.MakeDict()
-        self._ReadyList = []
+        self.ReadyList = []
         self._players = []
         for i in range(nb_players):
             cartesJoueur = []
@@ -23,10 +24,10 @@ class Game:
             self._players.append(Player('J' + str(i), cartesJoueur))
             # On va mettre dans cette liste les cartes de joueurs qui ont validé leur carte
             # de telle sorte que la carte joué de Joueur 0 (-> J0): self._ReadyList[0] = *numero de la carte*
-            self._ReadyList.append(0)
+            self.ReadyList.append(0)
 
     def validCarte(self, carte, NbJoueur):
-        self._ReadyList[NbJoueur] = carte
+        self.ReadyList[NbJoueur] = carte
         joueur = self.getJoueurs()[NbJoueur]
         joueur.setCartes(joueur.removeCarte(carte))
 
@@ -42,19 +43,19 @@ class Game:
 
     def CheckReady(self):
         nb = 0
-        for e in self._ReadyList:
+        for e in self.ReadyList:
             if e != 0:
                 nb += 1
         if self.nbJoueurs == nb:
             # tous les joueurs ont validé leur carte
-            self.play()
-            # une fois qu'on a fini de jouer on remet la liste Ready a 0 pour chaque joueur
-            self._ReadyList = [0] * len(self._ReadyList)
+            return True
+
         elif self.nbJoueurs * (2 / 3) <= nb:
             # plus de 2/3 des joueurs ont validé leur carte
             # on lance le TIMER
             print("ATTENTION : plus de 2/3 des joueurs ont validé leur carte, le jeu va commencer !")
 
+        return False
 
     def GetCards(self):
         return self._cards
@@ -80,7 +81,26 @@ class Game:
         return piles
 
     def getReadyList(self):
-        return self._ReadyList
+        return self.ReadyList
+
+    def replacePile(self, choice, NbJoueur):
+        piles = self.getPiles()
+        # on va donc remplacer la pile choisie par la carte du joueur
+        listeCartes = self.getReadyList()
+
+        CarteJoueur = listeCartes[NbJoueur]
+        Joueur = self.getJoueurs()[NbJoueur]
+        if CarteJoueur == 0:
+            print("ERREUR : impossible de jouer carte 0")
+            return
+        print('>', piles)
+        print(">>", piles[int(choice)])
+        print(
+            f"Joueur {listeCartes.index(CarteJoueur)} a récupéré les vachettes de la pile {choice}, la pile "
+            f"était {piles[int(choice)]} et valais {self.CalculScore(piles[choice])} en jouant {CarteJoueur}")
+        Joueur.setNewScore(self.CalculScore(piles[int(choice)]))
+        self.ReadyList[NbJoueur] = 0
+        self.SetPile(int(choice), [CarteJoueur])
 
     def play(self):
         # tri dans l'ordre croissant des cartes
@@ -92,9 +112,8 @@ class Game:
             # on sait ansi que le joueur `listeCartes.index(e)` a joué la carte `e`, et ce dans le bon ordre
             # on doit donc comparer aux cartes des piles
             piles = self.getPiles()
+            print("piles>",piles)
             deltas = []
-            # FAIRE cas ou la carte est plus petite que la plus petite carte de la pile
-            print(piles)
             for pile in piles:
                 deltas.append(CarteJoueur - pile[-1])
             print('deltas >', deltas)
@@ -103,22 +122,10 @@ class Game:
             if all(delta < 0 for delta in deltas):
                 # on va donc demander au joueur de choisir la pile qu'il va remplacer
                 # on va donc afficher les piles
-                for pile in piles:
-                    print(f"    la pile {piles.index(pile)} :{pile} qui vaut : {self.CalculScore(pile)}")
-                print("veuillez choisir une des piles que vous allez remplacer, vous récupereez les vachettes de la "
-                      "pile choisie")
-                choice = input("veuillez choisir une pile : 0,1,2,3 :")
-                while deltas[int(choice)] > 0:
-                    print("vous ne pouvez que prendre une pile qui est plus petite que votre carte")
-                    choice = input("veuillez choisir une pile : 0,1,2,3 :")
-                # on va donc remplacer la pile choisie par la carte du joueur
-                Joueur = self.getJoueurs()[listeCartes.index(CarteJoueur)]
-                print(
-                    f"Joueur {listeCartes.index(CarteJoueur)} a récupéré les vachettes de la pile {choice}, la pile "
-                    f"était {piles[int(choice)]} et valais {self.CalculScore(piles[int(choice)])}")
-                Joueur.setNewScore(self.CalculScore(piles[int(choice)]))
-                self.SetPile(int(choice), [CarteJoueur])
-
+                scores = [self.CalculScore(pile) for pile in piles]
+                print(listeCartes.index(CarteJoueur), CarteJoueur, scores)
+                return listeCartes.index(CarteJoueur), CarteJoueur, scores
+                # On va faire un return, si on a une carte plus petite que les PILES, pour slect dans le GUI
             else:
                 print(
                     f"la carte de Joueur {listeCartes.index(CarteJoueur)} est la plus proche"
@@ -135,6 +142,10 @@ class Game:
                     Joueur = self.getJoueurs()[listeCartes.index(CarteJoueur)]
                     Joueur.setNewScore(self.CalculScore(pile[:-1]))
                     self.SetPile(piles.index(pile), [pile[-1]])
+            # une fois qu'on a fini de jouer on remet la liste Ready a 0 pour chaque joueur
+            print("RESET ready list")
+            self.ReadyList = [0] * len(self.ReadyList)
+            return "continue"
 
     def getPiles(self):
         return self._piles

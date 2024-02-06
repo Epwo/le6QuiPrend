@@ -38,6 +38,9 @@ class GameInterface:
             else:
                 print(f"Image not found: {image_path}")
 
+    def GetPileChoice(self):
+        return self.PileChoice
+
     def SetScore(self, score):
         self.score_text = self.font.render("Votre score: " + str(score), True, (255, 255, 255))
 
@@ -79,6 +82,12 @@ class GameInterface:
         fenetre_principale.mainloop()
 
     def PopUp(self, nbPoint):
+        def on_bouton_click(PileChoice):
+            print(f"----------\n"
+                  f"Choix du bouton : Pile {PileChoice} qui vaut {nbPoint[PileChoice]} vachettes")
+            fenetre_principale.destroy()  # Fermer la fenêtre après avoir affiché le choix
+            self.PileChoice = PileChoice
+
         fenetre_principale = tk.Tk()
         label_texte = tk.Label(fenetre_principale, text="Veuillez choisir une des piles que vous allez remplacer. Vous récupérerez les vachettes de la pile choisie.")
         label_texte.pack(pady=10)
@@ -246,3 +255,4 @@ if __name__ == "__main__":
     interface.Winner()
     while 1:
         interface.runGameLoop()
+        #interface.PopUp([20, 10, 41, 41])

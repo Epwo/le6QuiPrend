@@ -1,5 +1,4 @@
 import random as rd
-import pygame
 
 def MakeDict():
     DictScore = {}

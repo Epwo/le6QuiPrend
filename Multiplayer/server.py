@@ -49,7 +49,7 @@ class ChatServer:
                 print(f"Received message: {data.decode('utf-8')} from {ClientName} ({client_socket.getpeername()})")
                 self.received_messages.append([ClientName, data.decode('utf-8')])
                 self.broadcast(('You:' + ClientName).encode('utf-8'))
-                time.sleep(0.1)
+                time.sleep(0.5)
 
             except socket.error:
                 self.clients.remove(client_socket)

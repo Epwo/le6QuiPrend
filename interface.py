@@ -53,6 +53,31 @@ class GameInterface:
     def SetPiles(self, piles):
         self.piles = piles
 
+    def Winner(self, text):
+        fenetre_principale = tk.Tk()
+        fenetre_principale.title("Félicitations !")
+
+        # Définir la taille et la position de la fenêtre pop-up
+        fenetre_principale.geometry("400x200+400+200")
+
+        # Ajouter une couleur de fond et une bordure
+        fenetre_principale.configure(bg="#FFFFCC", bd=10)
+
+        # Créer un cadre pour organiser les éléments
+        frame = tk.Frame(fenetre_principale, bg="#FFFFCC")
+        frame.place(relx=0.5, rely=0.5, anchor="center")
+
+        # Ajouter un label avec le message de victoire
+        label_texte = tk.Label(frame, text=text, font=("Helvetica", 16), bg="#FFFFCC")
+        label_texte.pack(pady=10)
+
+        # Ajouter un bouton pour fermer la fenêtre pop-up
+        bouton_fermer = tk.Button(frame, text="Fermer", command=fenetre_principale.destroy)
+        bouton_fermer.pack(pady=10)
+
+        # Lancer la boucle principale de la fenêtre pop-up
+        fenetre_principale.mainloop()
+
     def PopUp(self, nbPoint):
         fenetre_principale = tk.Tk()
         label_texte = tk.Label(fenetre_principale, text="Veuillez choisir une des piles que vous allez remplacer. Vous récupérerez les vachettes de la pile choisie.")
@@ -204,7 +229,7 @@ class GameInterface:
 
         # Afficher la fenêtre pop-up si elle existe
         pygame.display.flip()
-        time.sleep(0.5)
+        time.sleep(0.05)
 
     # Quitter pygame une fois la boucle terminée
     pygame.quit()
@@ -217,6 +242,7 @@ if __name__ == "__main__":
     interface.SetPlayers([{"name": "Joueur 1", "score": 0, "isReady": True},
                           {"name": "Joueur 2", "score": 0, "isReady": False},
                           {"name": "Joueur 3", "score": 0, "isReady": False}])
+    #interface.PopUp([20, 10, 41, 41])
+    interface.Winner()
     while 1:
         interface.runGameLoop()
-        #interface.PopUp([20, 10, 41, 41])

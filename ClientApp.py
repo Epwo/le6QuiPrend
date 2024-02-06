@@ -20,6 +20,8 @@ def main():
     GameState = {"Piles": [[], [], [], []], "Joueurs": {"isReady": [], "score": [], "cartes": []}}
     # on fait une boucle infini pour pouvoir utiliser les threads.
     clickedTemp = 0
+    endGame = False
+
     try:
         while True:
             time.sleep(0.1)
@@ -49,6 +51,14 @@ def main():
                     clientChat.send_message(str(clicked))
                 affich.displayPlayers()
                 affich.runGameLoop()
+
+                # Vérifiez si le jeu est terminé en fonction des informations du GameState
+                cartes_du_joueur = GameState['Joueurs']['cartes']
+                print(cartes_du_joueur)
+                if all(not cartes for cartes in cartes_du_joueur) and msg[-1][:8] == "EndGame:" and not endGame:
+                    endGame = True
+                    affich.Winner(msg[-1][8:])
+
 
 
 

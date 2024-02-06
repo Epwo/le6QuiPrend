@@ -3,7 +3,6 @@ import game
 import threading
 import time
 
-
 def main():
     # Read the server IP from the file
     server_ip = open("Multiplayer/Master_ip.txt", "r").read().strip()
@@ -15,7 +14,10 @@ def main():
     G = game.Game(nb_players=nbPlayer)
     GameState = {"Piles": G.getPiles(), "Joueurs": {"isReady": G.getReadyList(), "score": G.getScores(),
                                                     "cartes": G.getCartes()}}
+
+    sendGameState = True
     try:
+        endgame = False
         while True:
             # on va actualiser l'etat du jeu toute les 0.4 secondes, pour eviter que les messages ne se melangent
             time.sleep(0.4)
@@ -24,13 +26,15 @@ def main():
                 # on va donc envoyer a chaque client le GameState ( etat du jeu)
                 GameState = {"Piles": G.getPiles(), "Joueurs": {"isReady": G.getReadyList(), "score": G.getScores(),
                                                                 "cartes": G.getCartes()}}
-                chat_server.broadcast(('GameState:' + str(GameState)).encode('utf-8'))
+                if sendGameState:
+                    chat_server.broadcast(('GameState:' + str(GameState)).encode('utf-8'))
                 # on va maintenant regarder si on a recu des messages de la part des clients
                 # messages qui sont forcément la carte que l'on a tiré.
                 msg = chat_server.GetReceivedMessages()
 
                 if msg[-1][1] == 'GetGameState':
-                    chat_server.broadcast(('GameState:' + str(GameState)).encode('utf-8'))
+                    if sendGameState:
+                        chat_server.broadcast(('GameState:' + str(GameState)).encode('utf-8'))
                 elif msg[-1] is not None:
                     IsReady = G.getReadyList()[int(msg[-1][0][-1])]
                     # on va verifier si on a pas deja validé la carte
@@ -46,7 +50,21 @@ def main():
                             chat_server.EmptyMessages(nbPlayer)
                 G.CheckReady()
 
+            if all(not cartes for cartes in G.getCartes()) and not endgame:
+                endgame = True
+                sendGameState = False  # Stop sending GameState updates
+                chat_server.broadcast(('GameState:' + str(GameState)).encode('utf-8'))
+                time.sleep(2)
+                winner_message = "Félicitations, vous avez fini la partie"
 
+                if G.nbJoueurs == 1:
+                    winner_message = "Félicitations, vous avez gagné !"
+                else:
+                    for i in range(G.nbJoueurs):
+                        if G.GetWinner() == i:
+                            winner_message = f"Le gagnant est joueur {i}"
+
+                chat_server.broadcast(('EndGame:' + winner_message).encode('utf-8'))
 
 
 

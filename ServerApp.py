@@ -8,7 +8,7 @@ def main():
     # Read the server IP from the file
     server_ip = open("Multiplayer/Master_ip.txt", "r").read().strip()
     nbPlayer = 1
-    flagChangePile = False
+    PileIsChanged = False
     # Create a ChatServer instance and connect to the server
     chat_server = server.ChatServer(server_ip, 8080)
     chat_server_thread = threading.Thread(target=chat_server.start_server)
@@ -39,17 +39,13 @@ def main():
                         chat_server.broadcast(('GameState:' + str(GameState)).encode('utf-8'))
                     chat_server.broadcast(('GameState:' + str(GameState)).encode('utf-8'))
                 elif msg[-1][1][:10] == 'ChoixPile:':
-                    if not flagChangePile:
-                        flagChangePile = True
+                    if not PileIsChanged and not PileIsChanged:
+                        PileIsChanged = True
                         print(f"Joueur {msg[-1][0][-1]} a choisi la pile {msg[-1][1][10:]}")
                         G.replacePile(int(msg[-1][1][10:]), int(msg[-1][0][-1]))
                         print("---Pile changée---")
-                        print(chat_server.GetReceivedMessages())
-                        chat_server.EmptyMessages(nbPlayer)
-                        print(chat_server.GetReceivedMessages())
                         time.sleep(1)
-                        flagChangePile = False
-                    flagChangePile = True
+
                     print(msg[-1][0][-1] + " a choisi la pile : " + msg[-1][1][10:])
                     G.replacePile(int(msg[-1][1][10:]), int(msg[-1][0][-1]))
                     time.sleep(1)

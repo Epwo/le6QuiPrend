@@ -61,7 +61,7 @@ class ChatServer:
 
     def start_server(self):
         self.server_socket.bind((self.host, self.port))
-        self.server_socket.listen(5)
+        self.server_socket.listen(5)# jusqua 5 requetes
         print(f"Server listening on {self.host}:{self.port}")
 
         while True:

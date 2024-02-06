@@ -26,7 +26,7 @@ class ChatServer:
         time.sleep(0.05)
 
     def send_to_client(self, client_index, message):
-        time.sleep(0.2)  # on attend que le mesage precedent ai été envoyé
+    #    time.sleep(0.2)  # on attend que le mesage precedent ai été envoyé
         if 0 <= client_index < len(self.clients):
             try:
                 self.clients[client_index].send(message.encode('utf-8'))
@@ -48,7 +48,7 @@ class ChatServer:
                 print(f"Received message: {data.decode('utf-8')} from {ClientName} ({client_socket.getpeername()})")
                 self.received_messages.append([ClientName, data.decode('utf-8')])
                 self.broadcast(('You:' + ClientName).encode('utf-8'))
-                time.sleep(0.5)
+                #time.sleep(0.5)
 
             except socket.error:
                 self.clients.remove(client_socket)

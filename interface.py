@@ -102,6 +102,7 @@ class GameInterface:
                                     command=lambda pile=i: on_bouton_click(pile))
             bouton_pile.pack(pady=10)
         # Boucle principale
+        fenetre_principale.wait_window()
         fenetre_principale.mainloop()
 
     def displayPlayers(self):

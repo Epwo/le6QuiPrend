@@ -3,9 +3,11 @@ from PIL import Image
 import tkinter as tk
 from tkinter import messagebox
 
+
 class GameInterface:
     def __init__(self, size):
         # Paramètrer l'affichage
+        self.PileChoice = None
         self.NbPlayerMe = None
         self.clicked_card = None
         self.piles = [[], [], [], []]
@@ -89,12 +91,15 @@ class GameInterface:
             self.PileChoice = PileChoice
 
         fenetre_principale = tk.Tk()
-        label_texte = tk.Label(fenetre_principale, text="Veuillez choisir une des piles que vous allez remplacer. Vous récupérerez les vachettes de la pile choisie.")
+        label_texte = tk.Label(fenetre_principale,
+                               text="Veuillez choisir une des piles que vous allez remplacer. Vous récupérerez les "
+                                    "vachettes de la pile choisie.")
         label_texte.pack(pady=10)
 
         # Création d'un bouton pour afficher la fenêtre pop-up
-        for i in range(0, 4):
-            bouton_pile = tk.Button(fenetre_principale, text=f"Pile {i} qui vaut {nbPoint[i]} vachettes")
+        for i in range(4):
+            bouton_pile = tk.Button(fenetre_principale, text=f"Pile {i} qui vaut {nbPoint[i]} vachettes",
+                                    command=lambda pile=i: on_bouton_click(pile))
             bouton_pile.pack(pady=10)
         # Boucle principale
         fenetre_principale.mainloop()
@@ -251,8 +256,8 @@ if __name__ == "__main__":
     interface.SetPlayers([{"name": "Joueur 1", "score": 0, "isReady": True},
                           {"name": "Joueur 2", "score": 0, "isReady": False},
                           {"name": "Joueur 3", "score": 0, "isReady": False}])
-    #interface.PopUp([20, 10, 41, 41])
+    # interface.PopUp([20, 10, 41, 41])
     interface.Winner()
     while 1:
         interface.runGameLoop()
-        #interface.PopUp([20, 10, 41, 41])
+        # interface.PopUp([20, 10, 41, 41])

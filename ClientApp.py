@@ -57,9 +57,8 @@ def main():
                 affich.displayPlayers()
                 affich.runGameLoop()
 
-                # Vérifiez si le jeu est terminé en fonction des informations du GameState
+                # Vérifiez si le jeu esst terminé en fonction des informations du GameState
                 cartes_du_joueur = GameState['Joueurs']['cartes']
-                print(cartes_du_joueur)
                 if all(not cartes for cartes in cartes_du_joueur) and msg[-1][:8] == "EndGame:" and not endGame:
                     endGame = True
                     affich.Winner(msg[-1][8:])

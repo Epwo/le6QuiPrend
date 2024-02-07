@@ -1,7 +1,8 @@
 # Le principe de jeu
 Chaque joueur se voit attribuer 10 cartes de 1 à 104 telle que celle-ci :
 
-![[carte_66.jpg|50]]
+
+![carte_66.jpg](https://raw.githubusercontent.com/Epwo/le6QuiPrend/main/source/img/carte_66.jpg)
 
 Chaque tour les joueurs choisissent une carte. Une fois chaque joueur ayant choisi une carte, la plus petite commence, et les cartes se placent au plus proche positif des cartes de la pile.
 

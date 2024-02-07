@@ -21,8 +21,7 @@ De même manière les 'clients' devront changer la valeur de Master_ip.txt par l
 Suite a un merge problème, le reste n'est plus opérationnel 🫣🫣
 
 # Exemple Jeu
-
-![[Pasted image 20240207165316.png]]
+![SchemaExemple.jpg](https://raw.githubusercontent.com/Epwo/le6QuiPrend/main/source/img/SchemaExemple.jpg)
 # Architecture 
 
  

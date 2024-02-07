@@ -1,59 +1,29 @@
-104 cartes ( une chacune )
+# Le principe de jeu
+Chaque joueur se voit attribuer 10 cartes de 1 à 104 telle que celle-ci :
 
+![[carte_66.jpg|50]]
 
-# classes POO
+Chaque tour les joueurs choisissent une carte. Une fois chaque joueur ayant choisi une carte, la plus petite commence, et les cartes se placent au plus proche positif des cartes de la pile.
 
-Classe Jeu
-		attributs :<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- isOver : check un joueur a il 66 pts ?<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- CartesTot : tt les 104 cartes.<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- piles : liste de pile de cartes -> dict{"pile1":[1,55,103]} ..<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Player : instance de la classe player x nb joueurs<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Board : instance du plateau, qui va afficher le plateau pour le joeur (selon le schema)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- ReadyList : liste des joueurs ayant choisi leur carte, tel que `ReadyList = [1,2,3,4]` ainsi J1 a validé la carte 1, J2 la carte 2 etc..<br>
+Une fois qu'un joueur pose la 6e carte de la pile, il se voit contraint de récupérer toutes les cartes de la pile (excepté la sienne qu'il laisse en tant que nouvelle pile)
+Il compte ensuite le nombre de vachettes en haut de chaque carte, cela fait son score qu'on comparera a celui des autres joueurs en fin de partie.
 
-&nbsp;&nbsp;&nbsp;&nbsp;functions :<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- __init__ : <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- create plateau -> choisis 4 cartes parmi la liste et les ajoutes dans piles.<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- create DictScore<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - validCarte : pose la carte face caché<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - CleanPile : `(nomPile,player)` on désigne une pile : "pile1" et on la vide de ses cartes excepté la -1 dans player.score via<br> 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- CalculScore : `([int,int,...])` selon les regles de Round -> dictScore `= {10:3,20:3,...,55:7}` <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Play : - (si tt les cartes sont validés)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- tri dans l'ordre croissant<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- compare a chaque pile de carte, on pose la carte la ou le $\delta$ est le + faible  et positif.<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - une fois tt les cartes posées,<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - on regarde la taille de chaque pile<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- CheckReady : check pour chaque joueur la liste ReadyList, si 2/3 == 1 alors -> `DisplayClock`<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- si 100% == 1 -> `play()`<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - DisplayClock : affiche l'horloge de 30s  de timer. <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- si a la fin du timer toujours pas choisi, prend une carte au hasard.<br>
-<br>				  
-Classe Joueur ( hérite ):<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;attributs :<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- cartes : 10 cartes aléatoires parmi la liste de 104 cartes <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- score : nb de vachettes<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- nom : défaut = player<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-  isReady : le joueur a il validé sa carte?<br>
+Le joueur avec le score le plus faible sera le vainqueur.
+# L'installation
+Il faut qu'un joueur lance le serveur, (en parallèle du coté client )
+Si un serveur est lancé, il faut modifier l'IP dans le fichier `Mutliplayer/master_ip.txt` selon l'ip du pc source, avec la commande `ipconfig` .
 
-# Image du fonctionnement Interface
+De même manière les 'clients' devront changer la valeur de Master_ip.txt par l'ip du pc cible.
 
-![imageSchema](https://raw.githubusercontent.com/Epwo/le6QuiPrend/func/6quiprend_schema.jpg)
+# Release - current working version 
+[cliquez ici](https://github.com/Epwo/le6QuiPrend/tree/0356746fa830b79f6250e3349ddfd1269af57a14)
+Suite a un merge problème, le reste n'est plus opérationnel 🫣🫣
 
-# Pré round
- 10 cartes chacun -> a moduler si on veut pour la longueur du jeu
-# round
-## cartes multiples de 10
-- 3 vachettes
-## cartes mutiples de 5
-- 2 vachettes
-(qui finissent par 5)
-## cartes mutiples de 11
-( SAUF LE 55 )
-- 5 vachettes
-## le 55
-- 7 vachettes
-# Post round
--> ask ready for the next round ? -> dialog box 
-garder les pts entre chaque tour
-!! Si joueur.pts() >= 66 -> fin du jeu il a perdu.
+# Exemple Jeu
+
+![[Pasted image 20240207165316.png]]
+# Architecture 
+
+ 
+# Présentation
+[Lien de la présentation Gslides](https://docs.google.com/presentation/d/1HV2KnmRzA54FXpBaO3FKxhuZdyvwR8Y3CSQ147IN05Q/edit#slide=id.g2b7613a9a0b_0_26)

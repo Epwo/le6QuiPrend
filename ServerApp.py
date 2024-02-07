@@ -7,8 +7,7 @@ import time
 def main():
     # Read the server IP from the file
     server_ip = open("Multiplayer/Master_ip.txt", "r").read().strip()
-    nbPlayer = 1
-    PileIsChanged = False
+    nbPlayer = 2
     # Create a ChatServer instance and connect to the server
     chat_server = server.ChatServer(server_ip, 8080)
     chat_server_thread = threading.Thread(target=chat_server.start_server)
@@ -33,18 +32,22 @@ def main():
                 # on va maintenant regarder si on a recu des messages de la part des clients
                 # messages qui sont forcément la carte que l'on a tiré.
                 msg = chat_server.GetReceivedMessages()
-
+                print(msg)
                 if msg[-1][1] == 'GetGameState':
                     if sendGameState:
                         chat_server.broadcast(('GameState:' + str(GameState)).encode('utf-8'))
                     chat_server.broadcast(('GameState:' + str(GameState)).encode('utf-8'))
                 elif msg[-1][1][:10] == 'ChoixPile:':
-                    if not PileIsChanged and not PileIsChanged:
-                        PileIsChanged = True
+                    if not G.GetSemaphore():
+                        G.SetSemaphore(True)
                         print(f"Joueur {msg[-1][0][-1]} a choisi la pile {msg[-1][1][10:]}")
                         G.replacePile(int(msg[-1][1][10:]), int(msg[-1][0][-1]))
                         print("---Pile changée---")
+                        print(chat_server.GetReceivedMessages())
+                        chat_server.EmptyMessages(nbPlayer)
+                        print(chat_server.GetReceivedMessages())
                         time.sleep(1)
+                        G.SetSemaphore(False)
 
                     print(msg[-1][0][-1] + " a choisi la pile : " + msg[-1][1][10:])
                     G.replacePile(int(msg[-1][1][10:]), int(msg[-1][0][-1]))
@@ -60,8 +63,10 @@ def main():
                         G.validCarte(int(msg[-1][1]), int(msg[-1][0][-1]))
                         # on va supprimer les derniers messages (nb Players) recu (= les cartes validees) maitenant
                         # qu'elles ont été jouées.
-                        if all(value != 0 for value in G.getReadyList()):
+                        if all(value != 0 for value in G.getReadyList()) and not G.GetSemaphore():
+                            print("--Empty Messages ---")
                             chat_server.EmptyMessages(nbPlayer)
+
                 G.CheckReady()
 
                 if G.CheckReady():
@@ -90,8 +95,6 @@ def main():
                             winner_message = f"Le gagnant est joueur {i}"
 
                 chat_server.broadcast(('EndGame:' + winner_message).encode('utf-8'))
-
-
 
     except KeyboardInterrupt:
         chat_server.close()

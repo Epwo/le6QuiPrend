@@ -12,6 +12,7 @@ class Game:
         self._dictScore = function.MakeDict()
         self.ReadyList = []
         self._players = []
+        self.WaitSemaphore = False
         for i in range(nb_players):
             cartesJoueur = []
             for j in range(10):
@@ -25,6 +26,12 @@ class Game:
             # On va mettre dans cette liste les cartes de joueurs qui ont validé leur carte
             # de telle sorte que la carte joué de Joueur 0 (-> J0): self._ReadyList[0] = *numero de la carte*
             self.ReadyList.append(0)
+
+    def SetSemaphore(self, value):
+        self.WaitSemaphore = value
+
+    def GetSemaphore(self):
+        return self.WaitSemaphore
 
     def validCarte(self, carte, NbJoueur):
         self.ReadyList[NbJoueur] = carte
